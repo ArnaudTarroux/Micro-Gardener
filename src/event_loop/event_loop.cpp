@@ -10,7 +10,7 @@ ESP_EVENT_DEFINE_BASE(MG_EVENTS);
 esp_event_loop_handle_t mg_events_loop;
 
 void event_loop_dispatch(mg_event event, void* event_data) {
-    esp_event_post_to(mg_events_loop, MG_EVENTS, event, &event_data, sizeof(event_data), portMAX_DELAY);
+    esp_event_post_to(mg_events_loop, MG_EVENTS, event, event_data, sizeof(event_data), portMAX_DELAY);
 }
 
 void event_loop_register(mg_event event, esp_event_handler_t handler) {
@@ -22,7 +22,7 @@ void init_event_loop() {
 
     esp_event_loop_args_t mg_events_loop_args = {
         .queue_size = 10,
-        .task_name = "mg_event_task", // task will be created
+        .task_name = "mg_event_task",
         .task_priority = uxTaskPriorityGet(NULL),
         .task_stack_size = 2048,
         .task_core_id = tskNO_AFFINITY

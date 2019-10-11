@@ -26,11 +26,13 @@ main_config main_config_ { .wifi = wifi_config_ };
 
 void setup() {
   Serial.begin(9600);
+  esp_log_level_set("*", ESP_LOG_INFO);
 
   init_event_loop();
+  config_init(&main_config_);
   wifi_init(&main_config_);
   temperature_init(&main_config_);
-  httpd_init();
+  httpd_init(&main_config_);
   init_fan(&main_config_);
 }
 

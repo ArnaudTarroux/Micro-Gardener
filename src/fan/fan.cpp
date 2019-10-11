@@ -1,3 +1,4 @@
+#include <Arduino.h>
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 #include "driver/gpio.h"
@@ -22,13 +23,13 @@ void fan_task(void *parameters) {
 
         ESP_LOGI(FAN_LOG_TAG, "FAN TASK %0.2f", currentTemperature);
 
-        vTaskDelay(10000 / portTICK_PERIOD_MS);
+        vTaskDelay(10000);
     }
 }
 
 void on_temperature_changed(void* handler_args, esp_event_base_t base, int32_t event, void* event_data) {
     ESP_LOGI(FAN_LOG_TAG, "Temperature changed");
-    currentTemperature = get_temperature();    
+    currentTemperature = get_temperature();
 }
 
 void init_fan(main_config *config) {

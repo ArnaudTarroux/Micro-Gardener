@@ -47,7 +47,7 @@ void temperature_task(void *parameters) {
             event_loop_dispatch(MG_EVENT_TEMPERATURE_CHANGED, &temperature);
         }
 
-        vTaskDelay(TEMPERATURE_DELAY_BETWEEN / portTICK_PERIOD_MS);
+        vTaskDelay(TEMPERATURE_DELAY_BETWEEN);
     }
 }
 
