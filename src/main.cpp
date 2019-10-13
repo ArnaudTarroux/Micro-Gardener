@@ -8,6 +8,9 @@
 #include "httpd/httpd.h"
 #include "temperature/temperature.h"
 #include "fan/fan.h"
+#include "led/led.h"
+#include "timer/timer.h"
+#include "state/state.h"
 #include "event_source.h"
 #include "event_loop/event_loop.h"
 
@@ -22,7 +25,12 @@ wifi_config wifi_config_ {
   .is_sta_ready = 1, 
 };
 
-main_config main_config_ { .wifi = wifi_config_ };
+daytime_config daytime_config_ {
+  .start = { .hours = 19, .minutes = 0 },
+  .end = { .hours = 6, .minutes = 0 },
+};
+
+main_config main_config_ { .wifi = wifi_config_, .temp = {}, .daytime = daytime_config_ };
 
 void setup() {
   Serial.begin(9600);
@@ -33,7 +41,10 @@ void setup() {
   wifi_init(&main_config_);
   temperature_init(&main_config_);
   httpd_init(&main_config_);
-  init_fan(&main_config_);
+  // init_fan(&main_config_);
+  init_led(&main_config_);
+  init_timer(&main_config_);
+  init_state(&main_config_);
 }
 
 void loop() {

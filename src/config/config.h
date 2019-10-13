@@ -17,12 +17,23 @@ struct temp_config {
     float max_temp;
 };
 
+struct daytime_config {
+    struct slot {
+        int hours;
+        int minutes;
+    };
+    
+    slot start;
+    slot end;
+};
+
 struct main_config {
     wifi_config wifi;
     temp_config temp;
+    daytime_config daytime;
 };
 
-void set_config(void *key, const void *value);
+void set_daytime_config(daytime_config daytime_config);
 void config_init(main_config *config);
 
 #endif
