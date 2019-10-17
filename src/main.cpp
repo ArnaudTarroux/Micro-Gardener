@@ -11,6 +11,7 @@
 #include "led/led.h"
 #include "timer/timer.h"
 #include "state/state.h"
+#include "mqtt/mqtt.h"
 #include "event_source.h"
 #include "event_loop/event_loop.h"
 
@@ -41,10 +42,11 @@ void setup() {
   wifi_init(&main_config_);
   temperature_init(&main_config_);
   httpd_init(&main_config_);
-  // init_fan(&main_config_);
+  init_fan(&main_config_);
   init_led(&main_config_);
   init_timer(&main_config_);
   init_state(&main_config_);
+  init_mqtt(&main_config_);
 }
 
 void loop() {

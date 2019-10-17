@@ -1,4 +1,3 @@
-#include <Arduino.h>
 #include <freertos/FreeRTOS.h>
 #include <esp_log.h>
 #include "AsyncTCP.h"
