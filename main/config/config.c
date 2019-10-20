@@ -61,5 +61,9 @@ void get_mqtt_uri(char *uri) {
 }
 
 void get_leds_dim(int *dim) {
-    nvs_get_u8(config_handle, "leds_dim", dim);
+    nvs_get_i16(config_handle, "leds_dim", dim);
+}
+
+void set_leds_dim(int dim) {
+    nvs_set_i16(config_handle, "leds_dim", dim);
 }

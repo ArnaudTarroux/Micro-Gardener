@@ -10,6 +10,7 @@
 #include "wifi/wifi.h"
 #include "mqtt/mqtt.h"
 #include "leds/leds.h"
+#include "action/action_dispatcher.h"
 
 #define MAIN_LOG_TAG "MAIN"
 
@@ -19,6 +20,7 @@ void app_main()
 {
     mg_config_err conf_err;
 
+    init_action_dispatcher();
     init_event_loop();
     conf_err = init_config();
     if (conf_err != MG_CONFIG_OK) {

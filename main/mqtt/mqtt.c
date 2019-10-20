@@ -9,6 +9,7 @@
 
 #include "event_source.h"
 #include "event_loop/event_loop.h"
+#include "action/action_dispatcher.h"
 #include "mqtt.h"
 
 esp_mqtt_client_handle_t mqtt_client;
@@ -42,7 +43,7 @@ esp_err_t mqtt_event_handler(esp_mqtt_event_handle_t event) {
     case MQTT_EVENT_DATA:
         {
             ESP_LOGI(MQTT_LOG_TAG, "TOPIC=%.*s\r\n DATA=%.*s\r\n", event->topic_len, event->topic, event->data_len, event->data);
-            publish_event(event);
+            action_dispatch(event->data);
         }
         break;
     
@@ -51,24 +52,4 @@ esp_err_t mqtt_event_handler(esp_mqtt_event_handle_t event) {
     }
 
     return ESP_OK;
-}
-
-void publish_event(esp_mqtt_event_handle_t event) {
-    ESP_LOGI(MQTT_LOG_TAG, "DATA=%.*s\r\n", event->data_len, event->data);
-    const char *data = cJSON_Parse(event->data);
-
-    const cJSON *action;
-    const cJSON *value;
-
-    action = cJSON_GetObjectItemCaseSensitive(data, "action");
-    value = cJSON_GetObjectItemCaseSensitive(data, "value");
-    if (!cJSON_IsNumber(action) || !cJSON_IsNumber(value)) {
-        ESP_LOGI(MQTT_LOG_TAG, "Invalid json. MSG %d", event->msg_id);
-        return;
-    }
-
-    int valueInt = value->valueint;
-    mqtt_event_dispatch(action->valueint, valueInt);
-    
-    //printf("action %d   value %d", action->valueint, value->valueint);
 }

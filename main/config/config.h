@@ -13,5 +13,6 @@ void get_wifi_ssid(char *ssid);
 void get_wifi_password(char *password);
 void get_mqtt_uri(char *uri);
 void get_leds_dim(int *dim);
+void set_leds_dim(int dim);
 
 #endif

@@ -17,14 +17,6 @@ void event_loop_register(mg_event event, esp_event_handler_t handler) {
     esp_event_handler_register_with(mg_events_loop, MG_EVENTS, event, handler, NULL);
 }
 
-void mqtt_event_dispatch(mqtt_event event, void* event_data) {
-    esp_event_post_to(mg_events_loop, MG_EVENTS, event, &event_data, sizeof(event_data), portMAX_DELAY);
-}
-
-void mqtt_event_register(mqtt_event event, esp_event_handler_t handler) {
-    esp_event_handler_register_with(mg_events_loop, MG_EVENTS, event, handler, NULL);
-}
-
 void init_event_loop() {
     ESP_LOGI(EVENT_LOOP_LOG_TAG, "initialized");
 
