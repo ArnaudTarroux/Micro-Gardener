@@ -8,6 +8,7 @@
 #include "mg_errors.h"
 #include "event_loop/event_loop.h"
 #include "wifi/wifi.h"
+#include "timer/timer.h"
 #include "mqtt/mqtt.h"
 #include "leds/leds.h"
 #include "action/action_dispatcher.h"
@@ -37,12 +38,13 @@ void app_main()
 }
 
 void start_modules() {
-    ESP_LOGI(MAIN_LOG_TAG, "Module will be started");
+    ESP_LOGI(MAIN_LOG_TAG, "Modules gonna be started");
 
     init_mqtt();
     init_leds();
 }
 
 void on_wifi_connected(void* handler_args, esp_event_base_t base, int32_t event, void* event_data) {
+    init_timer();
     start_modules();
 }

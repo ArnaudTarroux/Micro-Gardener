@@ -8,4 +8,9 @@ typedef enum {
     MG_ACTION_PARSER_INVALID_ACTION_TYPE,
 } mg_config_err;
 
+typedef enum {
+    MG_TIMER_OK = 1,
+    MG_TIMER_SNTP_NOT_SETUP = 2,
+} mg_timer_err;
+
 #endif
