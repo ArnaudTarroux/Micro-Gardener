@@ -10,6 +10,7 @@
 #include "wifi_config.h"
 #include "mqtt_config.h"
 #include "leds_config.h"
+#include "timer_config.h"
 
 nvs_handle config_handle;
 
@@ -42,6 +43,11 @@ mg_config_err init_config() {
      */
     init_leds_config(config_handle);
 
+    /**
+     * TIMER CONFIG 
+     */
+    init_timer_config(config_handle);
+
     return MG_CONFIG_OK;
 }
 
@@ -66,4 +72,19 @@ void get_leds_dim(int *dim) {
 
 void set_leds_dim(int dim) {
     nvs_set_i16(config_handle, "leds_dim", dim);
+}
+
+mg_config_err get_timer_period(int *start, int *stop) {
+    esp_err_t err_timer_start = nvs_get_i16(config_handle, "timer_start", start);
+    esp_err_t err_timer_stop = nvs_get_i16(config_handle, "timer_stop", stop);
+    if (err_timer_start == ESP_ERR_NVS_NOT_FOUND || err_timer_stop == ESP_ERR_NVS_NOT_FOUND) {
+        return MG_CONFIG_TIMER_NOT_CONFIG;
+    }
+
+    return MG_CONFIG_OK;
+}
+
+void set_timer_period(int start, int stop) {
+    nvs_set_i16(config_handle, "timer_start", start);
+    nvs_set_i16(config_handle, "timer_stop", stop);
 }

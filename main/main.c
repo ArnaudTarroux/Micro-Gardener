@@ -40,11 +40,11 @@ void app_main()
 void start_modules() {
     ESP_LOGI(MAIN_LOG_TAG, "Modules gonna be started");
 
-    init_mqtt();
     init_leds();
+    init_timer();
+    init_mqtt();
 }
 
 void on_wifi_connected(void* handler_args, esp_event_base_t base, int32_t event, void* event_data) {
-    init_timer();
     start_modules();
 }

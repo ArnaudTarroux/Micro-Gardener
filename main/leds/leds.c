@@ -13,6 +13,7 @@
 #include "action/action_dispatcher.h"
 
 #include "leds.h"
+#include "timer/timer.h"
 
 #define LED_CHANNEL LEDC_CHANNEL_0
 #define LED_FREQ 4000
@@ -26,9 +27,18 @@ void on_leds_on_off(void* handler_args, esp_event_base_t base, int32_t event, vo
 void on_dim_updated(void* handler_args, esp_event_base_t base, int32_t event, void* event_data);
 void on_off_timer_callback(TimerHandle_t xTimer);
 
+void on_state_day(void* handler_args, esp_event_base_t base, int32_t event, void* event_data);
+void on_state_night(void* handler_args, esp_event_base_t base, int32_t event, void* event_data);
+
 TimerHandle_t on_off_timer;
 
 static QueueHandle_t dim_cmd;
+
+void refresh_dim() {
+    int dim;
+    get_leds_dim(&dim);
+    xQueueSend(dim_cmd, &dim, 0);
+}
 
 void init_leds() {
     ESP_LOGI(LEDS_LOG_TAG, "initialized");
@@ -58,6 +68,8 @@ void init_leds() {
 
     action_register(MG_ACTION_UPDATE_DIM, on_dim_updated);
     action_register(MG_ACTION_LEDS_ON_OFF, on_leds_on_off);
+    event_loop_register(MG_STATE_DAY, on_state_day);
+    event_loop_register(MG_STATE_NIGHT, on_state_night);
 
     on_off_timer = xTimerCreate("on_off_timer", pdMS_TO_TICKS( ON_OFF_TIMER_DURATION), pdFALSE, ( void * ) 0, on_off_timer_callback);
 }
@@ -67,6 +79,10 @@ void led_task(void *parameters) {
 
     while (1) {
         if (!xQueueReceive(dim_cmd, &dim, 1000 / portTICK_PERIOD_MS)) {
+            continue;
+        }
+
+        if (get_timer_state() != TIMER_STATE_DAY && dim > 0) {
             continue;
         }
 
@@ -116,7 +132,16 @@ void on_dim_updated(void* handler_args, esp_event_base_t base, int32_t event, vo
 
 void on_off_timer_callback(TimerHandle_t xTimer) {
     ESP_LOGI(LEDS_LOG_TAG, "on_off_timer_callback ended");
-    int dim;
-    get_leds_dim(&dim);
-    xQueueSend(dim_cmd, &dim, 0);   
+    refresh_dim();
+}
+
+void on_state_day(void* handler_args, esp_event_base_t base, int32_t event, void* event_data) {
+    ESP_LOGI(LEDS_LOG_TAG, "MG_STATE_DAY started");
+    refresh_dim();
+}
+
+void on_state_night(void* handler_args, esp_event_base_t base, int32_t event, void* event_data) {
+    ESP_LOGI(LEDS_LOG_TAG, "MG_STATE_DAY ended");
+    int dim = 0;
+    xQueueSend(dim_cmd, &dim, 0);
 }

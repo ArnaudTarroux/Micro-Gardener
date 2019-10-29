@@ -14,5 +14,7 @@ void get_wifi_password(char *password);
 void get_mqtt_uri(char *uri);
 void get_leds_dim(int *dim);
 void set_leds_dim(int dim);
+mg_config_err get_timer_period(int *start, int *stop);
+void set_timer_period(int start, int stop);
 
 #endif

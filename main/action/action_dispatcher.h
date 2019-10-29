@@ -12,6 +12,7 @@ ESP_EVENT_DECLARE_BASE(MG_ACTIONS);
 typedef enum {
     MG_ACTION_LEDS_ON_OFF = 10001,
     MG_ACTION_UPDATE_DIM = 10002,
+    MG_ACTION_UPDATE_TIMER_PERIOD = 10003,
 } actions;
 
 void action_dispatch(char *data);
