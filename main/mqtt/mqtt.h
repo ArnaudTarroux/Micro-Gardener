@@ -7,5 +7,6 @@
 #define MQTT_STASK_DEPTH 4096
 
 void init_mqtt();
+void publish_message(char *topic, char *data);
 
 #endif

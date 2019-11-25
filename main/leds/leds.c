@@ -16,19 +16,21 @@
 #include "timer/timer.h"
 
 #define LED_CHANNEL LEDC_CHANNEL_0
-#define LED_FREQ 4000
-#define LED_FADE_DURATION 5000
+#define LED_FREQ 40000
+#define LED_FADE_DURATION 3000
 #define ON_OFF_TIMER_DURATION 10000
+#define LED_RESOLUTION LEDC_TIMER_10_BIT
+#define MAX_DUTY pow(2, LED_RESOLUTION)
+#define max(x, y) (((x) <= (y)) ? (x) : (y)) 
 
 
 void led_task(void *parameters);
-double leds_calculate_duty();
 void on_leds_on_off(void* handler_args, esp_event_base_t base, int32_t event, void* event_data);
 void on_dim_updated(void* handler_args, esp_event_base_t base, int32_t event, void* event_data);
 void on_off_timer_callback(TimerHandle_t xTimer);
 
-void on_state_day(void* handler_args, esp_event_base_t base, int32_t event, void* event_data);
-void on_state_night(void* handler_args, esp_event_base_t base, int32_t event, void* event_data);
+static void on_state_day(void* handler_args, esp_event_base_t base, int32_t event, void* event_data);
+static void on_state_night(void* handler_args, esp_event_base_t base, int32_t event, void* event_data);
 
 TimerHandle_t on_off_timer;
 
@@ -45,7 +47,7 @@ void init_leds() {
 
     ledc_timer_config_t ledc_timer = {
         speed_mode: LEDC_HIGH_SPEED_MODE,
-        { duty_resolution: LEDC_TIMER_13_BIT, },
+        { duty_resolution: LED_RESOLUTION, },
         timer_num: LEDC_TIMER_0,
         freq_hz: LED_FREQ,
     };
@@ -87,7 +89,7 @@ void led_task(void *parameters) {
         }
 
         ESP_LOGI(LEDS_LOG_TAG, "command received %d", dim);
-        ledc_set_fade_with_time(LEDC_HIGH_SPEED_MODE, LED_CHANNEL, (dim * 10), LED_FADE_DURATION);
+        ledc_set_fade_with_time(LEDC_HIGH_SPEED_MODE, LED_CHANNEL, dim, LED_FADE_DURATION);
         ledc_fade_start(LEDC_HIGH_SPEED_MODE, LED_CHANNEL, LEDC_FADE_NO_WAIT);
 
         vTaskDelay((LED_FADE_DURATION * 1.1) / portTICK_PERIOD_MS);
@@ -108,9 +110,9 @@ void on_leds_on_off(void* handler_args, esp_event_base_t base, int32_t event, vo
         xQueueSend(dim_cmd, &dim, 0);
     } else {
         xQueueSend(dim_cmd, &dim, 0);
-        if (xTimerStart(on_off_timer, 0) != pdPASS) {
-            ESP_LOGI(LEDS_LOG_TAG, "Cannot start on_off_timer");
-        }
+        // if (xTimerStart(on_off_timer, 0) != pdPASS) {
+        //     ESP_LOGI(LEDS_LOG_TAG, "Cannot start on_off_timer");
+        // }
     }
 
     ESP_LOGI(LEDS_LOG_TAG, "on_led_status %d", status);
@@ -124,7 +126,7 @@ void on_dim_updated(void* handler_args, esp_event_base_t base, int32_t event, vo
         return;
     }
 
-    int dim_value = action->value->valueint;
+    int dim_value = max(action->value->valueint, MAX_DUTY);
     xQueueSend(dim_cmd, &dim_value, 0);
     ESP_LOGI(LEDS_LOG_TAG, "action id %d, value: %d", action->id, dim_value);
     set_leds_dim(dim_value);

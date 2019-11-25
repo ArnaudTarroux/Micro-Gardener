@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "esp_log.h"
@@ -52,4 +53,8 @@ esp_err_t mqtt_event_handler(esp_mqtt_event_handle_t event) {
     }
 
     return ESP_OK;
+}
+
+void publish_message(char *topic, char *data) {
+    esp_mqtt_client_publish(mqtt_client, topic, data, strlen(data), 0, 0);
 }

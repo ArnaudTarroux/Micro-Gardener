@@ -12,6 +12,8 @@
 #include "mqtt/mqtt.h"
 #include "leds/leds.h"
 #include "action/action_dispatcher.h"
+#include "weather/weather.h"
+#include "fan/fan.h"
 
 #define MAIN_LOG_TAG "MAIN"
 
@@ -43,6 +45,8 @@ void start_modules() {
     init_leds();
     init_timer();
     init_mqtt();
+    init_weather();
+    init_fan();
 }
 
 void on_wifi_connected(void* handler_args, esp_event_base_t base, int32_t event, void* event_data) {

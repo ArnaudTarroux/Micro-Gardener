@@ -51,7 +51,7 @@ mg_timer_err setup_sntp() {
     sntp_init();
 
     int retry = 0;
-    const int retry_count = 10;
+    const int retry_count = 20;
     while(timeinfo.tm_year < (2016 - 1900) && ++retry < retry_count) {
         ESP_LOGI(TIMER_LOG_TAG, "Waiting for system time to be set... (%d/%d)", retry, retry_count);
         vTaskDelay(2000 / portTICK_PERIOD_MS);
