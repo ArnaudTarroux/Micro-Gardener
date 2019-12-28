@@ -1,3 +1,6 @@
+#ifndef WIFI_H_
+#define WIFI_H_
+
 #include <WiFi.h>
 
 #define AP_SSID "Microgardener"
@@ -14,3 +17,5 @@ namespace microgardener {
         void beginSTA(int maxRetries=10);
     };
 }
+
+#endif

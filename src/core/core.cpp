@@ -5,16 +5,16 @@ using namespace microgardener;
 
 void _start_sta(WifiConfig *_wifiConfig);
 
-core_err_t start_core()
+core_err_t start_core(Config *config)
 {
-    Config _config;
-
     /**
      * Initialize the config and plugins
      */
     WifiConfig wifiPlugin;
-    _config.addPlugin(&wifiPlugin);
-    config_err_t configErr = _config.begin();
+    SntpConfig sntpPlugin;
+    config->addPlugin(&wifiPlugin);
+    config->addPlugin(&sntpPlugin);
+    config_err_t configErr = config->begin();
 
     if (configErr == CONFIG_WIFI_NOT_SETUP) {
         Wifi _wifi(AP_SSID, AP_PASSWORD);

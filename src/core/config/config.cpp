@@ -19,15 +19,17 @@ namespace config
 
         nvs_open(CONFIG_STORAGE_NAMESPACE, NVS_READWRITE, &configHandle);
 
-        Serial.printf("plugins :: %d", configPluginCount);
+        Serial.printf("plugins :: %d \n", configPluginCount);
 
         config_err_t configErr;
         for (int i = 0; i < configPluginCount; i++) {
             ConfigPlugin *cf = configPlugins[i];
             configErr = cf->start(&configHandle);
-            if (err != CONFIG_OK) {
-                return configErr;
+            if (configErr == CONFIG_OK) {
+                continue;
             }
+
+            return configErr;
         }
 
         return CONFIG_OK;

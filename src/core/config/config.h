@@ -2,7 +2,6 @@
 #define CONFIG_H_
 
 #include <Arduino.h>
-#include <array>
 #include "nvs_flash.h"
 #include "nvs.h"
 
@@ -23,8 +22,7 @@ namespace config {
         virtual config_err_t start(nvs_handle *handle) = 0;
     };
 
-    class Config 
-    {
+    class Config {
     public:
         config_err_t begin();
         void addPlugin(ConfigPlugin *plugin);

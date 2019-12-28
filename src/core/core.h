@@ -2,7 +2,8 @@
 #define CORE_H_
 
 #include "config/config.h"
-#include "config/wifi/wifi_config.cpp"
+#include "config/plugins/wifi_config.cpp"
+#include "config/plugins/sntp_config.cpp"
 #include "wifi/wifi.h"
 
 typedef enum {
@@ -10,6 +11,6 @@ typedef enum {
     CORE_WIFI_AP,
 } core_err_t;
 
-core_err_t start_core();
+core_err_t start_core(Config *config);
 
 #endif

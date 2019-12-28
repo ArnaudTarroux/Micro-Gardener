@@ -8,8 +8,6 @@ namespace microgardener {
     {
         this->ssid = ssid;
         this->password = password;
-
-        
     }
 
     void Wifi::beginSTA(int maxRetries)
